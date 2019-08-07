@@ -1,0 +1,211 @@
+openapi: 3.0.0
+servers:
+  - description: My Corp Messaging Service
+    url: https://virtserver.swaggerhub.com/suyashgandhi/messaging/1.0.0
+info:
+  description: |
+    This is a messaging service which provides APIs for retrieving and posting messages.
+  version: "1.0.0"
+  title: Messaging Service
+  contact:
+    email: suyashgandhi@gmail.com
+
+paths:
+  /messages:
+    get:
+      tags:
+        - messages
+      summary: Retrieve most recent messages. Message returned at once are 100 and further messages can be obtained by using the offset.
+      operationId: getMessages
+      parameters:
+        - in: query
+          name: offset
+          required: false
+          description: 'Used for pagination to offset the results. If no offset is specified then the most recent messages are returned.'
+          schema:
+            description: Numeric value to offset the results for pagination
+            type: integer
+            minimum: 0
+            example: '10'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+  /employees/{employee_id}/messages:
+    post:
+      tags:
+        - messagesByEmployee
+      summary: Messages posted by an employee
+      operationId: postMessage
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          description: 'Employee Id'
+          schema:
+            description: Numeric Identifier of an employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+      requestBody:
+        description: Message to be posted
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/Message'
+      responses:
+        '204':
+          description: Successful Response
+  /employees/{employee_id}/followers:
+    get:
+      tags:
+        - employeeFollowers
+      summary: Followers of an employee
+      operationId: getFollowers
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          description: 'Employee Id'
+          schema:
+            description: Numeric Identifier of an employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+    post:
+      tags:
+        - addFollower
+      summary: Add follower for an employee
+      operationId: addFollower
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          description: 'Employee Id'
+          schema:
+            description: Numeric Identifier of an employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+      requestBody:
+        description: Follower to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/Follower'
+      responses:
+        '204':
+          description: Successful Response
+  /employees/{employee_id}/followers/{follower_id}:
+    delete:
+      tags:
+        - removeFollower
+      summary: Remove follower for an employee
+      operationId: removeFollower
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          description: 'Employee Id'
+          schema:
+            description: Numeric Identifier of an employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+        - in: path
+          name: follower_id
+          required: true
+          description: 'Follower Id'
+          schema:
+            description: Numeric Identifier of employee following another employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+      responses:
+        '204':
+          description: Successful Response
+
+components:
+  schemas:
+    Message:
+      type: object
+      required:
+        - messageTitle
+        - messageText
+      properties:
+        title:
+          type: string
+          example: Beautiful Day
+        text:
+          type: string
+          example: What a beautiful day!!
+        createDate:
+          type: string
+          format: date-time
+          example: 2019-08-05 21:37:42.195
+    Messages:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int32
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+    Employee:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+          example: 100
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    Follower:
+      type: object
+      properties:
+        employeeId:
+          type: integer
+          example: 100
+
+  requestBodies:
+    Message:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+      description: Message that needs to be posted
+      required: true
+    Follower:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Follower'
+      description: Message that needs to be posted
+      required: true
+
