@@ -19,7 +19,7 @@ CREATE TABLE message (
   FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
 );
 
-CREATE INDEX idx_create_date ON message (create_date);
+CREATE INDEX idx_create_date ON message (create_date DESC);
 
 CREATE TABLE follower (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,6 +30,8 @@ CREATE TABLE follower (
   FOREIGN KEY (follower_id) REFERENCES employee(employee_id),
   FOREIGN KEY (publisher_id) REFERENCES employee(employee_id)
 );
+
+CREATE INDEX idx_publisher_id ON follower (publisher_id);
 
 INSERT INTO employee (first_name, last_name) VALUES('John', 'Doe');
 INSERT INTO employee (first_name, last_name) VALUES('Jane', 'Doe');

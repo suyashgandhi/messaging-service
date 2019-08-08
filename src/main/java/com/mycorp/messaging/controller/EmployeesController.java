@@ -9,11 +9,14 @@ import org.openapitools.api.EmployeesApi;
 import org.openapitools.model.Employee;
 import org.openapitools.model.Follower;
 import org.openapitools.model.Message;
+import org.openapitools.model.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import com.mycorp.messaging.exception.NotFoundException;
 import com.mycorp.messaging.service.EmployeeService;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Controller for Employee APIs
@@ -28,25 +31,51 @@ public class EmployeesController implements EmployeesApi {
 
     @Override
     public ResponseEntity<Void> postMessage(@Min(0) Integer employeeId, @Valid Message message) {
-        employeeService.addMessage(employeeId, message);
-        return ResponseEntity.noContent().build();
+        try {
+            employeeService.addMessage(employeeId, message);
+            return ResponseEntity.noContent().build();
+        } catch (NotFoundException nfe) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
     public ResponseEntity<List<Employee>> getFollowers(@Min(0) Integer employeeId) {
-        List<Employee> followers = employeeService.getFollowers(employeeId);
-        return ResponseEntity.ok(followers);
+        try {
+            List<Employee> followers = employeeService.getFollowers(employeeId);
+            return ResponseEntity.ok(followers);
+        } catch (NotFoundException nfe) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
     public ResponseEntity<Void> addFollower(@Min(0) Integer employeeId, @Valid Follower follower) {
-        employeeService.addFollower(employeeId, follower.getEmployeeId());
-        return ResponseEntity.noContent().build();
+        try {
+            employeeService.addFollower(employeeId, follower.getEmployeeId());
+            return ResponseEntity.noContent().build();
+        } catch (NotFoundException nfe) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
     public ResponseEntity<Void> removeFollower(@Min(0) Integer employeeId, @Min(0) Integer followerId) {
-        employeeService.removeFollower(employeeId, followerId);
-        return ResponseEntity.noContent().build();
+        try {
+            employeeService.removeFollower(employeeId, followerId);
+            return ResponseEntity.noContent().build();
+        } catch (NotFoundException nfe) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<Messages> getFeed(@Min(0) Integer employeeId) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public ResponseEntity<Messages> getMessagesByEmployee(@Min(0) Integer employeeId) {
+        throw new NotImplementedException();
     }
 }

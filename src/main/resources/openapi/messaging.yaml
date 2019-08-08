@@ -10,6 +10,9 @@ info:
   contact:
     email: suyashgandhi@gmail.com
 
+security:
+  - basicAuth: []
+
 paths:
   /messages:
     get:
@@ -38,7 +41,68 @@ paths:
           description: Bad Request
         '401':
           description: Unauthorized
-  /employees/{employee_id}/messages:
+          $ref: '#/components/responses/UnauthorizedError'
+  /messages/{messageId}:
+    get:
+      tags:
+        - getMessage
+      summary: Retrieve a message
+      operationId: getMessage
+      parameters:
+        - in: path
+          name: messageId
+          required: true
+          description: 'Unique identifier of the message'
+          schema:
+            description: Unique identifier of the message
+            type: integer
+            minimum: 0
+            example: '12345'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
+  /employees/{employeeId}/messages:
+    get:
+      tags:
+        - getMessagesByAnEmployee
+      summary: Get messages by an employee
+      operationId: getMessagesByEmployee
+      parameters:
+        - in: path
+          name: employeeId
+          required: true
+          description: 'Employee Id'
+          schema:
+            description: Numeric identifier of an employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
     post:
       tags:
         - messagesByEmployee
@@ -46,11 +110,11 @@ paths:
       operationId: postMessage
       parameters:
         - in: path
-          name: employee_id
+          name: employeeId
           required: true
           description: 'Employee Id'
           schema:
-            description: Numeric Identifier of an employee
+            description: Numeric identifier of an employee
             type: integer
             format: int32
             minimum: 0
@@ -64,6 +128,44 @@ paths:
       responses:
         '204':
           description: Successful Response
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
+  /employees/{employeeId}/feed:
+    get:
+      tags:
+        - getFeedForAnEmployee
+      summary: Get message feed for an employee
+      operationId: getFeed
+      parameters:
+        - in: path
+          name: employeeId
+          required: true
+          description: 'Employee Id'
+          schema:
+            description: Numeric identifier of an employee
+            type: integer
+            format: int32
+            minimum: 0
+            example: 100
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Messages'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
   /employees/{employee_id}/followers:
     get:
       tags:
@@ -90,6 +192,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Employee'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
     post:
       tags:
         - addFollower
@@ -115,6 +224,13 @@ paths:
       responses:
         '204':
           description: Successful Response
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
   /employees/{employee_id}/followers/{follower_id}:
     delete:
       tags:
@@ -145,8 +261,18 @@ paths:
       responses:
         '204':
           description: Successful Response
-
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Not Found
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     Message:
       type: object
@@ -192,7 +318,6 @@ components:
         employeeId:
           type: integer
           example: 100
-
   requestBodies:
     Message:
       content:
@@ -208,4 +333,10 @@ components:
             $ref: '#/components/schemas/Follower'
       description: Message that needs to be posted
       required: true
-
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string

@@ -8,4 +8,6 @@ public interface MessageRepository {
     Messages getMessages(int offset, int pageSize);
 
     void addMessage(int employeeId, Message message);
+
+    Message getMessage(int messageId);
 }
