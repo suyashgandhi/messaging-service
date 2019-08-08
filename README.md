@@ -10,5 +10,5 @@ Messaging service provides APIs for retrieving and posting messages.
 
 ## Test credentials
 To test the service use the below test credentials:
-username: john
-password: secret
+- username: john
+- password: secret
