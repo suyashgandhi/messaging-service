@@ -11,12 +11,12 @@ import org.openapitools.model.Follower;
 import org.openapitools.model.Message;
 import org.openapitools.model.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import com.mycorp.messaging.exception.NotFoundException;
 import com.mycorp.messaging.service.EmployeeService;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Controller for Employee APIs
@@ -71,11 +71,11 @@ public class EmployeesController implements EmployeesApi {
 
     @Override
     public ResponseEntity<Messages> getFeed(@Min(0) Integer employeeId) {
-        throw new NotImplementedException();
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
     @Override
     public ResponseEntity<Messages> getMessagesByEmployee(@Min(0) Integer employeeId) {
-        throw new NotImplementedException();
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 }

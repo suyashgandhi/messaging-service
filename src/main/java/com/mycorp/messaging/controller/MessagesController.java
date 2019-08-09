@@ -14,7 +14,7 @@ import com.mycorp.messaging.exception.NotFoundException;
 import com.mycorp.messaging.service.MessageService;
 
 /**
- * Controller for Messages API
+ * Controller for Messages APIs
  *
  * @author sgandhi
  */

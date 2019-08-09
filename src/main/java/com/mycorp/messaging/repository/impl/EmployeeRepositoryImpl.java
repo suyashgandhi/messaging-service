@@ -15,10 +15,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private static String GET_FOLLOWERS_QUERY = "select * from employee where employee_id in (select follower_id from follower where publisher_id = ?)";
-    private static String ADD_FOLLOWER_QUERY = "insert into follower(follower_id, publisher_id) values (?, ?)";
-    private static String DELETE_FOLLOWER_QUERY = "delete from follower where follower_id = ? and publisher_id = ?";
-    private static String GET_EMPLOYEE_QUERY = "select * from employee where employee_id = ?";
+    // Below constants are made visible For testing
+    static String GET_FOLLOWERS_QUERY = "select * from employee where employee_id in (select follower_id from follower where publisher_id = ?)";
+    static String ADD_FOLLOWER_QUERY = "insert into follower(follower_id, publisher_id) values (?, ?)";
+    static String DELETE_FOLLOWER_QUERY = "delete from follower where follower_id = ? and publisher_id = ?";
+    static String GET_EMPLOYEE_QUERY = "select * from employee where employee_id = ?";
 
     @Override
     public List<Employee> getFollowers(int employeeId) {

@@ -29,7 +29,7 @@ paths:
             description: Numeric value to offset the results for pagination
             type: integer
             minimum: 0
-            example: '10'
+          example: '10'
       responses:
         '200':
           description: Successful Response
@@ -40,7 +40,6 @@ paths:
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
   /messages/{messageId}:
     get:
@@ -57,7 +56,7 @@ paths:
             description: Unique identifier of the message
             type: integer
             minimum: 0
-            example: '12345'
+          example: '12345'
       responses:
         '200':
           description: Successful response
@@ -68,7 +67,6 @@ paths:
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
@@ -76,7 +74,7 @@ paths:
     get:
       tags:
         - getMessagesByAnEmployee
-      summary: Get messages by an employee
+      summary: Get messages by an employee - NOT IMPLEMENTED
       operationId: getMessagesByEmployee
       parameters:
         - in: path
@@ -88,7 +86,7 @@ paths:
             type: integer
             format: int32
             minimum: 0
-            example: 100
+          example: 100
       responses:
         '200':
           description: Successful Response
@@ -99,10 +97,11 @@ paths:
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
+        '501':
+          description: Not Implemented
     post:
       tags:
         - messagesByEmployee
@@ -118,20 +117,22 @@ paths:
             type: integer
             format: int32
             minimum: 0
-            example: 100
+          example: 100
       requestBody:
         description: Message to be posted
         content:
           application/json:
             schema:
               $ref: '#/components/requestBodies/Message'
+            example:
+              title: "New message"
+              text: "New message"
       responses:
         '204':
           description: Successful Response
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
@@ -139,7 +140,7 @@ paths:
     get:
       tags:
         - getFeedForAnEmployee
-      summary: Get message feed for an employee
+      summary: Get message feed for an employee - NOT IMPLEMENTED
       operationId: getFeed
       parameters:
         - in: path
@@ -159,13 +160,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Messages'
+              example:
+                offset: 1
+                messages:
+                  - id: 1
+                    title: 'Beautiful Day'
+                    text: 'What a beautiful day!!'
+                    employeeId: 100
+                    createDate: '2019-07-21T17:32:28Z'
+                  - id: 2
+                    title: 'Happy Holidays'
+                    text: 'Wish you happy holidays'
+                    employeeId: 200
+                    createDate: '2019-07-21T17:32:28Z'
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
+        '501':
+          description: Not Implemented
   /employees/{employee_id}/followers:
     get:
       tags:
@@ -182,7 +197,7 @@ paths:
             type: integer
             format: int32
             minimum: 0
-            example: 100
+          example: 100
       responses:
         '200':
           description: Successful response
@@ -195,7 +210,6 @@ paths:
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
@@ -221,13 +235,14 @@ paths:
           application/json:
             schema:
               $ref: '#/components/requestBodies/Follower'
+            example:
+              employeeId: 100
       responses:
         '204':
           description: Successful Response
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
@@ -247,7 +262,7 @@ paths:
             type: integer
             format: int32
             minimum: 0
-            example: 100
+          example: 100
         - in: path
           name: follower_id
           required: true
@@ -257,14 +272,13 @@ paths:
             type: integer
             format: int32
             minimum: 0
-            example: 100
+          example: 100
       responses:
         '204':
           description: Successful Response
         '400':
           description: Bad Request
         '401':
-          description: Unauthorized
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
@@ -280,22 +294,29 @@ components:
         - messageTitle
         - messageText
       properties:
+        id:
+          type: integer
+          example: 1
         title:
           type: string
           example: Beautiful Day
         text:
           type: string
           example: What a beautiful day!!
+        employeeId:
+          type: integer
+          example: 100
         createDate:
           type: string
           format: date-time
-          example: 2019-08-05 21:37:42.195
+          example: '2019-07-21T17:32:28Z'
     Messages:
       type: object
       properties:
         offset:
           type: integer
           format: int32
+          example: 1
         messages:
           type: array
           items:
@@ -338,5 +359,6 @@ components:
       description: Authentication information is missing or invalid
       headers:
         WWW_Authenticate:
+          description: Authentication method that should be used to gain access to the resource.
           schema:
             type: string

@@ -17,9 +17,10 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private final String GET_MESSAGES_QUERY = "SELECT * from (SELECT rownum as row_id, * FROM MESSAGE order by create_date desc) where row_id between ? and ?";
-    private final String GET_MESSAGE_QUERY = "select * from message where id = ?";
-    private final String ADD_MESSAGE_QUERY = "insert into message(employee_id, title, text) values(?,?,?)";
+    // Below are made visibile for testing
+    static final String GET_MESSAGES_QUERY = "SELECT * from (SELECT rownum as row_id, * FROM MESSAGE order by create_date desc) where row_id between ? and ?";
+    static final String GET_MESSAGE_QUERY = "select * from message where id = ?";
+    static final String ADD_MESSAGE_QUERY = "insert into message(employee_id, title, text) values(?,?,?)";
 
     @Override
     public Messages getMessages(int offset, int pageSize) {
