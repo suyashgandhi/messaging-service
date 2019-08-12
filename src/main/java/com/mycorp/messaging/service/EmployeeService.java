@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openapitools.model.Employee;
 import org.openapitools.model.Message;
+import org.openapitools.model.Messages;
 
 import com.mycorp.messaging.exception.NotFoundException;
 
@@ -16,4 +17,6 @@ public interface EmployeeService {
     void addFollower(int employeeId, int followerId) throws NotFoundException;
 
     void removeFollower(int employeeId, int followerId) throws NotFoundException;
+
+    Messages getFeed(int employeeId, int offset) throws NotFoundException;
 }

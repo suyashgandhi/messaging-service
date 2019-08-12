@@ -64,13 +64,6 @@ public class EmployeesControllerTest {
     }
 
     @Test
-    public void getFeed_shouldSucceed() {
-        ResponseEntity responseEntity = controller.getFeed(1);
-        assertEquals(HttpStatus.NOT_IMPLEMENTED, responseEntity.getStatusCode());
-        verifyZeroInteractions(employeeService);
-    }
-
-    @Test
     public void getMessagesByEmployee_shouldSucceed() {
         ResponseEntity responseEntity = controller.getMessagesByEmployee(1);
         assertEquals(HttpStatus.NOT_IMPLEMENTED, responseEntity.getStatusCode());

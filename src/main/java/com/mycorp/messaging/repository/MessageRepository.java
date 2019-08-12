@@ -10,4 +10,6 @@ public interface MessageRepository {
     void addMessage(int employeeId, Message message);
 
     Message getMessage(int messageId);
+
+    Messages getFeed(int employeeId, int offset, int pageSize);
 }

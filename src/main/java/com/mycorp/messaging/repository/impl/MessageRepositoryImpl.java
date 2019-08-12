@@ -21,6 +21,7 @@ public class MessageRepositoryImpl implements MessageRepository {
     static final String GET_MESSAGES_QUERY = "SELECT * from (SELECT rownum as row_id, * FROM MESSAGE order by create_date desc) where row_id between ? and ?";
     static final String GET_MESSAGE_QUERY = "select * from message where id = ?";
     static final String ADD_MESSAGE_QUERY = "insert into message(employee_id, title, text) values(?,?,?)";
+    static final String GET_FEED_QUERY = "SELECT * from (SELECT rownum as row_id, * from message where employee_id in (SELECT publisher_id from follower where follower_id = ?) order by create_date desc)  where row_id between ? and ?";
 
     @Override
     public Messages getMessages(int offset, int pageSize) {
@@ -39,6 +40,20 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Override
     public Message getMessage(int messageId) {
         return jdbcTemplate.queryForObject(GET_MESSAGE_QUERY, new BeanPropertyRowMapper<>(Message.class), messageId);
+    }
+
+    @Override
+    public Messages getFeed(int employeeId, int offset, int pageSize) {
+        Messages messages = new Messages();
+        List<Message> messageList = jdbcTemplate
+                .query(GET_FEED_QUERY, new BeanPropertyRowMapper<>(Message.class), employeeId, offset + 1, offset + pageSize);
+        messages.setMessageList(messageList);
+        if (messageList.size() == 0) {
+            messages.setOffset(0);
+        } else {
+            messages.setOffset(messageList.get(messageList.size() - 1).getRowId());
+        }
+        return messages;
     }
 
     @Override

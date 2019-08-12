@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openapitools.model.Employee;
 import org.openapitools.model.Message;
+import org.openapitools.model.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired private MessageRepository messageRepository;
     @Autowired private EmployeeRepository employeeRepository;
     @Autowired private ModelMapper mapper;
+    private final int PAGE_SIZE = 100;
 
     @Override
     public void addMessage(int employeeId, Message message) throws NotFoundException {
@@ -50,6 +52,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         validateEmployeeId(employeeId);
         validateEmployeeId(followerId);
         employeeRepository.deleteFollower(employeeId, followerId);
+    }
+
+    @Override
+    public Messages getFeed(int employeeId, int offset) throws NotFoundException {
+        validateEmployeeId(employeeId);
+        com.mycorp.messaging.entity.Messages result = messageRepository.getFeed(employeeId, offset, PAGE_SIZE);
+        Messages messages = new Messages();
+        messages.setMessages(mapper.mapAsList(result.getMessageList(), org.openapitools.model.Message.class));
+        messages.setOffset(result.getOffset());
+        return messages;
     }
 
     private void validateEmployeeId(int employeeId) throws NotFoundException {

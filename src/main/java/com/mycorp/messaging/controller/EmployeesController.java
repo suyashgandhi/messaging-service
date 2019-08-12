@@ -70,8 +70,13 @@ public class EmployeesController implements EmployeesApi {
     }
 
     @Override
-    public ResponseEntity<Messages> getFeed(@Min(0) Integer employeeId) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ResponseEntity<Messages> getFeed(@Min(0) Integer employeeId, @Min(0) @Valid Integer offset) {
+        try {
+            Messages messages = employeeService.getFeed(employeeId, offset != null ? offset : 0);
+            return ResponseEntity.ok(messages);
+        } catch (NotFoundException nfe) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
